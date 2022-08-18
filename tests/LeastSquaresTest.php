@@ -105,15 +105,10 @@ class LeastSquaresTest extends TestCase
         ];
     }
 
-    protected function setUp(): void
-    {
-        bcscale(6);
-    }
-
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testSlope($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    public function test_slope($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -128,7 +123,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testIntercept($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    public function test_intercept($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -143,7 +138,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testRSquared($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    public function test_r_squared($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -158,7 +153,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testDifferences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    public function test_differences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -173,7 +168,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testCumulativeSumOfDifferences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    public function test_cumulative_sum_of_differences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -188,7 +183,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testMeanY($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    public function test_mean_y($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -203,7 +198,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testRegressionLinePoints($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    public function test_regression_line_points($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -218,7 +213,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testPredictedXValues($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $predictionX, $predictionY)
+    public function test_predicted_x_values($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $predictionX, $predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -239,7 +234,7 @@ class LeastSquaresTest extends TestCase
     /**
      * @dataProvider seriesDataProvider
      */
-    public function testPredictedYValues($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $predictionX, $predictionY)
+    public function test_predicted_y_values($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $predictionX, $predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -257,17 +252,22 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    public function testItThrowsAnExceptionIfCoordinatesCountsDontMatch()
+    public function test_it_throws_an_exception_if_coordinates_counts_dont_match()
     {
         $this->expectException(SeriesCountMismatch::class);
 
         new LeastSquares([1, 2, 3], [1, 2, 3, 4]);
     }
 
-    public function testItThrowsAnExceptionIfCoordinatesAreEmpty()
+    public function test_it_throws_an_exception_if_coordinates_are_empty()
     {
         $this->expectException(SeriesHasZeroElements::class);
 
         new LeastSquares([], []);
+    }
+
+    protected function setUp(): void
+    {
+        bcscale(6);
     }
 }
