@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class PointTest extends TestCase
 {
-    public function testXAndYCanBeGetAndSetOnPoint()
+    public function test_x_and_y_can_be_get_and_set_on_point()
     {
         $point = new Point(1, 2);
 
