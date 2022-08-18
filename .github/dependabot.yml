@@ -1,0 +1,19 @@
+version: 2
+
+registries:
+  packagist-luminsports:
+    type: "composer-repository"
+    url: "https://repo.packagist.com"
+    username: "token"
+    password: ${{ secrets.LUMINSPORTS_PACKAGIST_TOKEN }}
+
+updates:
+  - package-ecosystem: "composer"
+    directory: "/"
+    registries: "*"
+    versioning-strategy: "lockfile-only"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Australia/Adelaide"
