@@ -3,7 +3,7 @@
 [![Code Style](https://github.com/luminsports/php-linear-regression/actions/workflows/php-cs-fixer.yml/badge.svg?branch=main)](https://github.com/luminsports/php-linear-regression/actions/workflows/php-cs-fixer.yml)
 [![Tests](https://github.com/luminsports/php-linear-regression/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/luminsports/php-linear-regression/actions/workflows/run-tests.yml)
 
-A Linear regression class that uses the least squares method to approximate a straight line to a data set.
+A Linear regression class that uses the least squares method to approximate a straight line to a data set. Forked from [davebarnwell/ml-regression-least-squares](https://github.com/davebarnwell/ml-regression-least-squares), this version uses new PHP 8.1 syntax, and BCMath for high precision.
 
 ```composer install luminsports/linear-regression```
 
