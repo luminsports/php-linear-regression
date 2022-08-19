@@ -83,6 +83,10 @@ class LeastSquares
      */
     public function predictX(float $y): float
     {
+        if ($this->getSlope() === 0.0) {
+            return 0;
+        }
+
         return BigDecimal::of($y)->minus($this->getIntercept())->dividedBy($this->getSlope(), 16, RoundingMode::HALF_UP)->toFloat();
     }
 
@@ -91,6 +95,10 @@ class LeastSquares
      */
     public function predictY(float $x): float
     {
+        if ($this->getSlope() === 0.0) {
+            return $this->getIntercept();
+        }
+
         return BigDecimal::of($this->getIntercept())->plus(BigDecimal::of($x)->multipliedBy($this->getSlope()))->toFloat();
     }
 
@@ -102,7 +110,11 @@ class LeastSquares
      */
     public function getDifferencesFromRegressionLine(): array
     {
-        if (0 === count($this->yDifferences)) {
+        if ($this->coordinateCount === 0) {
+            return [];
+        }
+
+        if (count($this->yDifferences) === 0) {
             for ($i = 0; $i < $this->coordinateCount; $i++) {
                 $this->yDifferences[] = BigDecimal::of($this->yCoords[$i])->minus($this->predictY($this->xCoords[$i]))->toFloat();
             }
@@ -118,7 +130,11 @@ class LeastSquares
      */
     public function getCumulativeSumOfDifferencesFromRegressionLine(): array
     {
-        if (0 === count($this->cumulativeSum)) {
+        if ($this->coordinateCount === 0) {
+            return [];
+        }
+
+        if (count($this->cumulativeSum) === 0) {
             $differences = $this->getDifferencesFromRegressionLine();
             $this->cumulativeSum = [$differences[0]];
             for ($i = 1; $i < $this->coordinateCount; $i++) {
@@ -134,6 +150,10 @@ class LeastSquares
      */
     public function getMeanY(): float|int
     {
+        if ($this->ySum === 0 || $this->coordinateCount === 0) {
+            return 0;
+        }
+
         return BigDecimal::of($this->ySum)->dividedBy($this->coordinateCount, 16, RoundingMode::HALF_UP)->toFloat();
     }
 
@@ -144,7 +164,11 @@ class LeastSquares
      */
     public function getRegressionLinePoints(): array
     {
-        if (0 == count($this->xy)) {
+        if ($this->coordinateCount === 0) {
+            return [];
+        }
+
+        if (count($this->xy) === 0) {
             $minX = BigDecimal::of(min($this->xCoords));
             $maxX = BigDecimal::of(max($this->xCoords));
             $xStepSize = $maxX->minus($minX)->dividedBy($this->coordinateCount - 1, 16, RoundingMode::HALF_UP);
@@ -163,7 +187,6 @@ class LeastSquares
     {
         $this->xCoords = array_merge($this->xCoords, $xCoords);
         $this->yCoords = array_merge($this->yCoords, $yCoords);
-        $this->countCoordinates();
         $this->compute();
     }
 
@@ -171,7 +194,14 @@ class LeastSquares
      * @throws SeriesCountMismatch
      * @throws SeriesHasZeroElements
      */
-    protected function countCoordinates(): int
+    protected function countCoordinates(): void
+    {
+    }
+
+    /**
+     * Linear model that uses least squares method to approximate solution.
+     */
+    protected function compute(): void
     {
         // calculate number points
         $this->coordinateCount = count($this->xCoords);
@@ -183,17 +213,15 @@ class LeastSquares
         }
 
         if ($this->coordinateCount === 0) {
-            throw new SeriesHasZeroElements('Series has zero elements');
+            $this->xSum = 0;
+            $this->ySum = 0;
+            $this->slope = 0;
+            $this->intercept = 0;
+            $this->rSquared = 0;
+
+            return;
         }
 
-        return $this->coordinateCount;
-    }
-
-    /**
-     * Linear model that uses least squares method to approximate solution.
-     */
-    protected function compute(): void
-    {
         $xSum = BigDecimal::zero();
         $ySum = BigDecimal::zero();
         $xxSum = BigDecimal::zero();

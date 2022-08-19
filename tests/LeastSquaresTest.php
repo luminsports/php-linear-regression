@@ -224,8 +224,8 @@ class LeastSquaresTest extends TestCase
         }
 
         $this->assertEqualsWithDelta(
-            $predictedXValues,
             $predictionX,
+            $predictedXValues,
             0.0001,
             'X-predicted values don\'t match'
         );
@@ -245,11 +245,26 @@ class LeastSquaresTest extends TestCase
         }
 
         $this->assertEqualsWithDelta(
-            $predictedYValues,
             $predictionY,
+            $predictedYValues,
             0.0001,
             'Y-predicted values don\'t match'
         );
+    }
+
+    public function test_it_can_calculate_against_an_empty_set_of_data()
+    {
+        $regression = new LeastSquares([], []);
+
+        $this->assertEquals(0, $regression->getSlope());
+        $this->assertEquals(0, $regression->getIntercept());
+        $this->assertEquals(0, $regression->getMeanY());
+        $this->assertEquals(0, $regression->getRSquared());
+        $this->assertEquals(0, $regression->predictX(10));
+        $this->assertEquals(0, $regression->predictY(10));
+        $this->assertEquals([], $regression->getRegressionLinePoints());
+        $this->assertEquals([], $regression->getDifferencesFromRegressionLine());
+        $this->assertEquals([], $regression->getCumulativeSumOfDifferencesFromRegressionLine());
     }
 
     public function test_it_throws_an_exception_if_coordinates_counts_dont_match()
@@ -257,12 +272,5 @@ class LeastSquaresTest extends TestCase
         $this->expectException(SeriesCountMismatch::class);
 
         new LeastSquares([1, 2, 3], [1, 2, 3, 4]);
-    }
-
-    public function test_it_throws_an_exception_if_coordinates_are_empty()
-    {
-        $this->expectException(SeriesHasZeroElements::class);
-
-        new LeastSquares([], []);
     }
 }
