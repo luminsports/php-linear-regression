@@ -19,5 +19,10 @@ class PointTest extends TestCase
 
         $this->assertEquals($point->getX(), 10.2);
         $this->assertEquals($point->getY(), 5.82E-10);
+
+        $this->assertEquals($point->toArray(), [
+            'x' => 10.2,
+            'y' => 5.82E-10
+        ]);
     }
 }

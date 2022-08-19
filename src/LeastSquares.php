@@ -2,6 +2,9 @@
 
 namespace LuminSports\LinearRegression;
 
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
+
 class LeastSquares
 {
     protected array $xCoords = [];
@@ -80,7 +83,7 @@ class LeastSquares
      */
     public function predictX(float $y): float
     {
-        return bcdiv(bcsub($y, $this->getIntercept()), $this->getSlope());
+        return BigDecimal::of($y)->minus($this->getIntercept())->dividedBy($this->getSlope(), 16, RoundingMode::HALF_UP)->toFloat();
     }
 
     /**
@@ -88,7 +91,7 @@ class LeastSquares
      */
     public function predictY(float $x): float
     {
-        return bcadd($this->getIntercept(), bcmul($x, $this->getSlope()));
+        return BigDecimal::of($this->getIntercept())->plus(BigDecimal::of($x)->multipliedBy($this->getSlope()))->toFloat();
     }
 
     /**
@@ -101,7 +104,7 @@ class LeastSquares
     {
         if (0 === count($this->yDifferences)) {
             for ($i = 0; $i < $this->coordinateCount; $i++) {
-                $this->yDifferences[] = bcsub($this->yCoords[$i], $this->predictY($this->xCoords[$i]));
+                $this->yDifferences[] = BigDecimal::of($this->yCoords[$i])->minus($this->predictY($this->xCoords[$i]))->toFloat();
             }
         }
 
@@ -119,7 +122,7 @@ class LeastSquares
             $differences = $this->getDifferencesFromRegressionLine();
             $this->cumulativeSum = [$differences[0]];
             for ($i = 1; $i < $this->coordinateCount; $i++) {
-                $this->cumulativeSum[$i] = bcadd($differences[$i], $this->cumulativeSum[$i - 1]);
+                $this->cumulativeSum[$i] = BigDecimal::of($differences[$i])->plus($this->cumulativeSum[$i - 1])->toFloat();
             }
         }
 
@@ -131,7 +134,7 @@ class LeastSquares
      */
     public function getMeanY(): float|int
     {
-        return bcdiv($this->ySum, $this->coordinateCount);
+        return BigDecimal::of($this->ySum)->dividedBy($this->coordinateCount, 16, RoundingMode::HALF_UP)->toFloat();
     }
 
     /**
@@ -142,12 +145,12 @@ class LeastSquares
     public function getRegressionLinePoints(): array
     {
         if (0 == count($this->xy)) {
-            $minX = min($this->xCoords);
-            $maxX = max($this->xCoords);
-            $xStepSize = bcdiv(bcsub($maxX, $minX), $this->coordinateCount - 1);
+            $minX = BigDecimal::of(min($this->xCoords));
+            $maxX = BigDecimal::of(max($this->xCoords));
+            $xStepSize = $maxX->minus($minX)->dividedBy($this->coordinateCount - 1, 16, RoundingMode::HALF_UP);
             $this->xy = [];
             for ($i = 0; $i < $this->coordinateCount; $i++) {
-                $x = bcadd($minX, bcmul($i, $xStepSize));
+                $x = $minX->plus($xStepSize->multipliedBy($i))->toFloat();
                 $y = $this->predictY($x);
                 $this->xy[] = new Point($x, $y); // add point
             }
@@ -191,37 +194,45 @@ class LeastSquares
      */
     protected function compute(): void
     {
-        $this->xSum = 0;
-        $this->ySum = 0;
-        $xxSum = 0;
-        $xySum = 0;
-        $yySum = 0;
+        $xSum = BigDecimal::zero();
+        $ySum = BigDecimal::zero();
+        $xxSum = BigDecimal::zero();
+        $xySum = BigDecimal::zero();
+        $yySum = BigDecimal::zero();
 
         for ($i = 0; $i < $this->coordinateCount; $i++) {
-            $xi = number_format($this->xCoords[$i], bcscale(), '.', '');
-            $yi = number_format($this->yCoords[$i], bcscale(), '.', '');
+            $xi = BigDecimal::of($this->xCoords[$i]);
+            $yi = BigDecimal::of($this->yCoords[$i]);
 
-            $this->xSum = bcadd($this->xSum, $xi);
-            $this->ySum = bcadd($this->ySum, $yi);
-            $xxSum = bcadd($xxSum, bcmul($xi, $xi));
-            $yySum = bcadd($yySum, bcmul($yi, $yi));
-            $xySum = bcadd($xySum, bcmul($xi, $yi));
+            $xSum = $xSum->plus($xi);
+            $ySum = $ySum->plus($yi);
+            $xxSum = $xxSum->plus($xi->multipliedBy($xi));
+            $yySum = $yySum->plus($yi->multipliedBy($yi));
+            $xySum = $xySum->plus($xi->multipliedBy($yi));
         }
 
         // calculate slope
-
-        $slopeNumerator = bcsub(bcmul($this->coordinateCount, $xySum), bcmul($this->xSum, $this->ySum));
-        $slopeDenominator = bcsub(bcmul($this->coordinateCount, $xxSum), bcmul($this->xSum, $this->xSum));
-        $this->slope = bccomp($slopeDenominator, 0) === 0 ? 0 : bcdiv($slopeNumerator, $slopeDenominator);
+        $slopeNumerator = $xySum->multipliedBy($this->coordinateCount)->minus($xSum->multipliedBy($ySum));
+        $slopeDenominator = $xxSum->multipliedBy($this->coordinateCount)->minus($xSum->multipliedBy($xSum));
+        $slope = $slopeDenominator->isGreaterThan(0) ? $slopeNumerator->dividedBy($slopeDenominator, 16, RoundingMode::HALF_UP) : BigDecimal::zero();
 
         // calculate intercept
-        $this->intercept = bcdiv(bcsub($this->ySum, bcmul($this->slope, $this->xSum)), $this->coordinateCount);
+        $intercept = $ySum->minus($slope->multipliedBy($xSum))->dividedBy($this->coordinateCount, 16, RoundingMode::HALF_UP);
 
         // Calculate R squared
         // Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
-        $rNumerator = bcsub(bcmul($this->coordinateCount, $xySum), bcmul($this->xSum, $this->ySum));
-        $rDenominator = bcsqrt(bcmul(bcsub(bcmul($this->coordinateCount, $xxSum), bcpow($this->xSum, 2)), bcsub(bcmul($this->coordinateCount, $yySum), bcpow($this->ySum, 2))));
+        $rNumerator = $slopeNumerator;
+        $rDenominator = $xxSum->multipliedBy($this->coordinateCount)
+            ->minus($xSum->power(2))
+            ->multipliedBy($yySum->multipliedBy($this->coordinateCount)->minus($ySum->power(2)))
+            ->sqrt(16);
 
-        $this->rSquared = bcpow(bccomp($rDenominator, 0) === 0 ? 0 : abs(bcdiv($rNumerator, $rDenominator)), 2);
+        $rSquared = ($rDenominator->isGreaterThan(0) ? $rNumerator->dividedBy($rDenominator, 16, RoundingMode::HALF_UP)->abs() : BigDecimal::zero())->power(2);
+
+        $this->xSum = $xSum->toFloat();
+        $this->ySum = $ySum->toFloat();
+        $this->slope = $slope->toFloat();
+        $this->intercept = $intercept->toFloat();
+        $this->rSquared = $rSquared->toFloat();
     }
 }
