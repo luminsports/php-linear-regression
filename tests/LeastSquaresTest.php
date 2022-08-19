@@ -5,7 +5,6 @@ namespace LuminSports\LinearRegression\Test;
 use LuminSports\LinearRegression\LeastSquares;
 use LuminSports\LinearRegression\Point;
 use LuminSports\LinearRegression\SeriesCountMismatch;
-use LuminSports\LinearRegression\SeriesHasZeroElements;
 use PHPUnit\Framework\TestCase;
 
 class LeastSquaresTest extends TestCase
