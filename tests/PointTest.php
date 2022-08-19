@@ -22,7 +22,7 @@ class PointTest extends TestCase
 
         $this->assertEquals($point->toArray(), [
             'x' => 10.2,
-            'y' => 5.82E-10
+            'y' => 5.82E-10,
         ]);
     }
 }
