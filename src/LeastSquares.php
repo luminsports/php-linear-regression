@@ -44,9 +44,16 @@ class LeastSquares
      */
     protected array $xy = [];
 
-    public function __construct(array $xCoords, array $yCoords)
+    public function __construct(array $xCoords, array $yCoords, protected int $precision = 8)
     {
         $this->appendData($xCoords, $yCoords);
+    }
+
+    public function setPrecision(int $precision): static
+    {
+        $this->precision = $precision;
+
+        return $this;
     }
 
     /**
@@ -87,7 +94,7 @@ class LeastSquares
             return 0;
         }
 
-        return BigDecimal::of($y)->minus($this->getIntercept())->dividedBy($this->getSlope(), 16, RoundingMode::HALF_UP)->toFloat();
+        return BigDecimal::of($y)->minus($this->getIntercept())->dividedBy($this->getSlope(), $this->precision, RoundingMode::HALF_UP)->toFloat();
     }
 
     /**
@@ -154,7 +161,7 @@ class LeastSquares
             return 0;
         }
 
-        return BigDecimal::of($this->ySum)->dividedBy($this->coordinateCount, 16, RoundingMode::HALF_UP)->toFloat();
+        return BigDecimal::of($this->ySum)->dividedBy($this->coordinateCount, $this->precision, RoundingMode::HALF_UP)->toFloat();
     }
 
     /**
@@ -171,7 +178,7 @@ class LeastSquares
         if (count($this->xy) === 0) {
             $minX = BigDecimal::of(min($this->xCoords));
             $maxX = BigDecimal::of(max($this->xCoords));
-            $xStepSize = $maxX->minus($minX)->dividedBy($this->coordinateCount - 1, 16, RoundingMode::HALF_UP);
+            $xStepSize = $maxX->minus($minX)->dividedBy($this->coordinateCount - 1, $this->precision, RoundingMode::HALF_UP);
             $this->xy = [];
             for ($i = 0; $i < $this->coordinateCount; $i++) {
                 $x = $minX->plus($xStepSize->multipliedBy($i))->toFloat();
@@ -192,16 +199,8 @@ class LeastSquares
 
     /**
      * @throws SeriesCountMismatch
-     * @throws SeriesHasZeroElements
      */
     protected function countCoordinates(): void
-    {
-    }
-
-    /**
-     * Linear model that uses least squares method to approximate solution.
-     */
-    protected function compute(): void
     {
         // calculate number points
         $this->coordinateCount = count($this->xCoords);
@@ -211,6 +210,14 @@ class LeastSquares
         if ($this->coordinateCount !== $yCount) {
             throw new SeriesCountMismatch("Number of elements in arrays do not match {$this->coordinateCount}:{$yCount}");
         }
+    }
+
+    /**
+     * Linear model that uses least squares method to approximate solution.
+     */
+    protected function compute(): void
+    {
+        $this->countCoordinates();
 
         if ($this->coordinateCount === 0) {
             $this->xSum = 0;
@@ -242,10 +249,10 @@ class LeastSquares
         // calculate slope
         $slopeNumerator = $xySum->multipliedBy($this->coordinateCount)->minus($xSum->multipliedBy($ySum));
         $slopeDenominator = $xxSum->multipliedBy($this->coordinateCount)->minus($xSum->multipliedBy($xSum));
-        $slope = $slopeDenominator->isGreaterThan(0) ? $slopeNumerator->dividedBy($slopeDenominator, 16, RoundingMode::HALF_UP) : BigDecimal::zero();
+        $slope = $slopeDenominator->isGreaterThan(0) ? $slopeNumerator->dividedBy($slopeDenominator, $this->precision, RoundingMode::HALF_UP) : BigDecimal::zero();
 
         // calculate intercept
-        $intercept = $ySum->minus($slope->multipliedBy($xSum))->dividedBy($this->coordinateCount, 16, RoundingMode::HALF_UP);
+        $intercept = $ySum->minus($slope->multipliedBy($xSum))->dividedBy($this->coordinateCount, $this->precision, RoundingMode::HALF_UP);
 
         // Calculate R squared
         // Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
@@ -255,7 +262,7 @@ class LeastSquares
             ->multipliedBy($yySum->multipliedBy($this->coordinateCount)->minus($ySum->power(2)))
             ->sqrt(16);
 
-        $rSquared = ($rDenominator->isGreaterThan(0) ? $rNumerator->dividedBy($rDenominator, 16, RoundingMode::HALF_UP)->abs() : BigDecimal::zero())->power(2);
+        $rSquared = ($rDenominator->isGreaterThan(0) ? $rNumerator->dividedBy($rDenominator, $this->precision, RoundingMode::HALF_UP)->abs() : BigDecimal::zero())->power(2);
 
         $this->xSum = $xSum->toFloat();
         $this->ySum = $ySum->toFloat();
