@@ -2,8 +2,4 @@
 
 namespace LuminSports\LinearRegression;
 
-use InvalidArgumentException;
-
-class SeriesCountMismatch extends InvalidArgumentException
-{
-}
+class SeriesCountMismatch extends \InvalidArgumentException {}
