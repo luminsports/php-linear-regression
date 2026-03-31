@@ -72,9 +72,14 @@ $config->setRules([
     'simplified_null_return'                => true,
     'new_with_braces'                       => false,
     'single_trait_insert_per_statement'     => false,
+    'single_line_empty_body'                => true,
     'yoda_style'                            => false,
     'php_unit_method_casing'                => ['case' => 'snake_case'],
     'phpdoc_no_alias_tag'                   => ['replacements' => ['type' => 'var', 'link' => 'see']],
+    'new_with_parentheses'                  => ['named_class' => false, 'anonymous_class' => false],
+    'phpdoc_to_comment'                     => false,
+
+    'nullable_type_declaration_for_default_null_value' => true,
 ]);
 
 return $config->setFinder($finder)

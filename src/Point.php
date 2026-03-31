@@ -4,9 +4,7 @@ namespace LuminSports\LinearRegression;
 
 class Point
 {
-    public function __construct(protected float $x, protected float $y)
-    {
-    }
+    public function __construct(protected float $x, protected float $y) {}
 
     public function getX(): float
     {
