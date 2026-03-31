@@ -94,7 +94,10 @@ class LeastSquares
             return 0;
         }
 
-        return BigDecimal::of($y)->minus($this->getIntercept())->dividedBy($this->getSlope(), $this->precision, RoundingMode::HALF_UP)->toFloat();
+        return BigDecimal::of((string) $y)
+            ->minus(BigDecimal::of((string) $this->getIntercept()))
+            ->dividedBy(BigDecimal::of((string) $this->getSlope()), $this->precision, RoundingMode::HalfUp)
+            ->toFloat();
     }
 
     /**
@@ -106,7 +109,9 @@ class LeastSquares
             return $this->getIntercept();
         }
 
-        return BigDecimal::of($this->getIntercept())->plus(BigDecimal::of($x)->multipliedBy($this->getSlope()))->toFloat();
+        return BigDecimal::of((string) $this->getIntercept())
+            ->plus(BigDecimal::of((string) $x)->multipliedBy(BigDecimal::of((string) $this->getSlope())))
+            ->toFloat();
     }
 
     /**
@@ -123,7 +128,9 @@ class LeastSquares
 
         if (count($this->yDifferences) === 0) {
             for ($i = 0; $i < $this->coordinateCount; $i++) {
-                $this->yDifferences[] = BigDecimal::of($this->yCoords[$i])->minus($this->predictY($this->xCoords[$i]))->toFloat();
+                $this->yDifferences[] = BigDecimal::of((string) $this->yCoords[$i])
+                    ->minus(BigDecimal::of((string) $this->predictY($this->xCoords[$i])))
+                    ->toFloat();
             }
         }
 
@@ -145,7 +152,9 @@ class LeastSquares
             $differences = $this->getDifferencesFromRegressionLine();
             $this->cumulativeSum = [$differences[0]];
             for ($i = 1; $i < $this->coordinateCount; $i++) {
-                $this->cumulativeSum[$i] = BigDecimal::of($differences[$i])->plus($this->cumulativeSum[$i - 1])->toFloat();
+                $this->cumulativeSum[$i] = BigDecimal::of((string) $differences[$i])
+                    ->plus(BigDecimal::of((string) $this->cumulativeSum[$i - 1]))
+                    ->toFloat();
             }
         }
 
@@ -161,7 +170,7 @@ class LeastSquares
             return 0;
         }
 
-        return BigDecimal::of($this->ySum)->dividedBy($this->coordinateCount, $this->precision, RoundingMode::HALF_UP)->toFloat();
+        return BigDecimal::of((string) $this->ySum)->dividedBy($this->coordinateCount, $this->precision, RoundingMode::HalfUp)->toFloat();
     }
 
     /**
@@ -176,9 +185,9 @@ class LeastSquares
         }
 
         if (count($this->xy) === 0) {
-            $minX = BigDecimal::of(min($this->xCoords));
-            $maxX = BigDecimal::of(max($this->xCoords));
-            $xStepSize = $maxX->minus($minX)->dividedBy($this->coordinateCount - 1, $this->precision, RoundingMode::HALF_UP);
+            $minX = BigDecimal::of((string) min($this->xCoords));
+            $maxX = BigDecimal::of((string) max($this->xCoords));
+            $xStepSize = $maxX->minus($minX)->dividedBy($this->coordinateCount - 1, $this->precision + 8, RoundingMode::HalfUp);
             $this->xy = [];
             for ($i = 0; $i < $this->coordinateCount; $i++) {
                 $x = $minX->plus($xStepSize->multipliedBy($i))->toFloat();
@@ -236,8 +245,8 @@ class LeastSquares
         $yySum = BigDecimal::zero();
 
         for ($i = 0; $i < $this->coordinateCount; $i++) {
-            $xi = BigDecimal::of($this->xCoords[$i]);
-            $yi = BigDecimal::of($this->yCoords[$i]);
+            $xi = BigDecimal::of((string) $this->xCoords[$i]);
+            $yi = BigDecimal::of((string) $this->yCoords[$i]);
 
             $xSum = $xSum->plus($xi);
             $ySum = $ySum->plus($yi);
@@ -249,10 +258,10 @@ class LeastSquares
         // calculate slope
         $slopeNumerator = $xySum->multipliedBy($this->coordinateCount)->minus($xSum->multipliedBy($ySum));
         $slopeDenominator = $xxSum->multipliedBy($this->coordinateCount)->minus($xSum->multipliedBy($xSum));
-        $slope = $slopeDenominator->isGreaterThan(0) ? $slopeNumerator->dividedBy($slopeDenominator, $this->precision, RoundingMode::HALF_UP) : BigDecimal::zero();
+        $slope = $slopeDenominator->isGreaterThan(0) ? $slopeNumerator->dividedBy($slopeDenominator, $this->precision, RoundingMode::HalfUp) : BigDecimal::zero();
 
         // calculate intercept
-        $intercept = $ySum->minus($slope->multipliedBy($xSum))->dividedBy($this->coordinateCount, $this->precision, RoundingMode::HALF_UP);
+        $intercept = $ySum->minus($slope->multipliedBy($xSum))->dividedBy($this->coordinateCount, $this->precision, RoundingMode::HalfUp);
 
         // Calculate R squared
         // Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
@@ -260,9 +269,9 @@ class LeastSquares
         $rDenominator = $xxSum->multipliedBy($this->coordinateCount)
             ->minus($xSum->power(2))
             ->multipliedBy($yySum->multipliedBy($this->coordinateCount)->minus($ySum->power(2)))
-            ->sqrt(16);
+            ->sqrt(16, RoundingMode::Down);
 
-        $rSquared = ($rDenominator->isGreaterThan(0) ? $rNumerator->dividedBy($rDenominator, $this->precision, RoundingMode::HALF_UP)->abs() : BigDecimal::zero())->power(2);
+        $rSquared = ($rDenominator->isGreaterThan(0) ? $rNumerator->dividedBy($rDenominator, $this->precision, RoundingMode::HalfUp)->abs() : BigDecimal::zero())->power(2);
 
         $this->xSum = $xSum->toFloat();
         $this->ySum = $ySum->toFloat();
