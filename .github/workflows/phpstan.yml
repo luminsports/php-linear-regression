@@ -1,0 +1,28 @@
+name: Run PHPStan
+
+on:
+  push:
+    branches: [ 'main', 'develop', 'feature/**', 'release/**' ]
+    paths: ['src/**.php', 'phpstan*.neon*', 'composer.json', 'composer.lock']
+
+permissions:
+  contents: read
+
+jobs:
+  phpstan:
+    name: Run PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: bcmath
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-interaction
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan
