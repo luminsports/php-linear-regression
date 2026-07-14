@@ -17,3 +17,6 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "Australia/Adelaide"
+    groups:
+      security-updates:
+        applies-to: security-updates
