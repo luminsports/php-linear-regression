@@ -1,0 +1,36 @@
+src/LeastSquares.php
+  s_974f86e905cad8::t_982bfee886d14c 10,13,49-53,59,177,210-213
+  s_974f86e905cad8::t_efd122970d7aa1 191
+composer.json
+  s_974f86e905cad8::t_fe53c4fec1d37f 39
+  s_974f86e905cad8::t_7b0fa80c9aff2a 32-34,37-38,45-48
+src/Point.php
+  s_974f86e905cad8::t_982bfee886d14c 33
+.github/workflows/tests.yml
+  s_974f86e905cad8::t_e31228bd7186f4 1,11,15,25,27-29,31-33
+tests/LeastSquaresTest.php
+  s_974f86e905cad8::t_5348ae6d45a07c 264
+  s_974f86e905cad8::t_0708161d986c2b 258-263,265
+  s_974f86e905cad8::t_5587de9b91843d 13
+  s_974f86e905cad8::t_8c3cc699384ba3 8,108,121,134,147,160,173,186,199,218
+  s_974f86e905cad8::t_52cec10f9075c1 109,122,135,148,161,174,187
+.github/workflows/phpstan.yml
+  s_974f86e905cad8::t_e31228bd7186f4 11,27-28,31-37,40-45
+  s_974f86e905cad8::t_d0a5c6a90f84fe 5-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3f6409e0d5a6e3993c2b92f3602c9d4ab0244268",
+  "prompts": {},
+  "sessions": {
+    "s_974f86e905cad8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f6ce0-28d1-70a2-85fe-aef85997ef4a",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ryan Brereton <ryan@luminsports.com>"
+    }
+  }
+}
