@@ -2,11 +2,13 @@ name: Run PHPStan
 
 on:
   push:
-    branches: [ 'main', 'develop', 'feature/**', 'release/**' ]
-    paths: ['src/**.php', 'phpstan*.neon*', 'composer.json', 'composer.lock']
+    branches: [main, develop, 'feature/**', 'release/**']
+    paths: ['src/**', 'phpstan*.neon*', 'composer.json', 'composer.lock', '.github/workflows/phpstan.yml']
+  pull_request:
+    branches: [main, develop, 'feature/**', 'release/**']
+    paths: ['src/**', 'phpstan*.neon*', 'composer.json', 'composer.lock', '.github/workflows/phpstan.yml']
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   phpstan:
@@ -22,7 +24,22 @@ jobs:
         with:
           php-version: '8.5'
           extensions: bcmath
+          coverage: none
+          tools: composer:v2
       - name: Install Dependencies
         run: composer install --prefer-dist --no-interaction
+      - name: Restore Result Cache
+        uses: actions/cache/restore@v6
+        with:
+          path: .phpstan-cache
+          key: phpstan-result-cache-${{ github.run_id }}
+          restore-keys: |
+            phpstan-result-cache-
       - name: Run PHPStan
         run: ./vendor/bin/phpstan
+      - name: Save Result Cache
+        uses: actions/cache/save@v6
+        if: ${{ !cancelled() }}
+        with:
+          path: .phpstan-cache
+          key: phpstan-result-cache-${{ github.run_id }}

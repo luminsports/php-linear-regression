@@ -5,11 +5,12 @@ namespace LuminSports\LinearRegression\Test;
 use LuminSports\LinearRegression\LeastSquares;
 use LuminSports\LinearRegression\Point;
 use LuminSports\LinearRegression\SeriesCountMismatch;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class LeastSquaresTest extends TestCase
 {
-    public function seriesDataProvider(): array
+    public static function seriesDataProvider(): array
     {
         return [
             [
@@ -104,10 +105,8 @@ class LeastSquaresTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
-    public function test_slope($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    #[DataProvider('seriesDataProvider')]
+    public function test_slope($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $_predictionX, $_predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -119,10 +118,8 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
-    public function test_intercept($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    #[DataProvider('seriesDataProvider')]
+    public function test_intercept($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $_predictionX, $_predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -134,10 +131,8 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
-    public function test_r_squared($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    #[DataProvider('seriesDataProvider')]
+    public function test_r_squared($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $_predictionX, $_predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -149,10 +144,8 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
-    public function test_differences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    #[DataProvider('seriesDataProvider')]
+    public function test_differences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $_predictionX, $_predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -164,10 +157,8 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
-    public function test_cumulative_sum_of_differences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    #[DataProvider('seriesDataProvider')]
+    public function test_cumulative_sum_of_differences($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $_predictionX, $_predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -179,10 +170,8 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
-    public function test_mean_y($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    #[DataProvider('seriesDataProvider')]
+    public function test_mean_y($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $_predictionX, $_predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -194,10 +183,8 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
-    public function test_regression_line_points($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints)
+    #[DataProvider('seriesDataProvider')]
+    public function test_regression_line_points($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $_predictionX, $_predictionY)
     {
         $regression = new LeastSquares($x, $y);
 
@@ -209,9 +196,7 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
+    #[DataProvider('seriesDataProvider')]
     public function test_predicted_x_values($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $predictionX, $predictionY)
     {
         $regression = new LeastSquares($x, $y);
@@ -230,9 +215,7 @@ class LeastSquaresTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider seriesDataProvider
-     */
+    #[DataProvider('seriesDataProvider')]
     public function test_predicted_y_values($x, $y, $diffs, $cumSumDiffs, $slope, $intercept, $rSquared, $meanY, $regressionLinePoints, $predictionX, $predictionY)
     {
         $regression = new LeastSquares($x, $y);
@@ -271,5 +254,13 @@ class LeastSquaresTest extends TestCase
         $this->expectException(SeriesCountMismatch::class);
 
         new LeastSquares([1, 2, 3], [1, 2, 3, 4]);
+    }
+
+    public function test_prediction_precision_can_be_changed_fluently()
+    {
+        $regression = new LeastSquares([0, 3], [0, 1]);
+
+        $this->assertSame($regression, $regression->setPrecision(2));
+        $this->assertSame(1.53, $regression->predictX(0.51));
     }
 }

@@ -29,19 +29,22 @@
     "brick/math": "^0.12|^0.13|^0.14|^0.15|^0.16|^0.17"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.2",
-    "phpstan/phpstan": "^2.1",
-    "phpunit/php-code-coverage": "^10.1",
-    "phpunit/phpunit": "^10.5"
+    "friendsofphp/php-cs-fixer": "^3.95.13",
+    "pestphp/pest": "^4.7.5",
+    "phpstan/phpstan": "^2.2.5"
   },
   "scripts": {
-    "test": "phpunit",
-    "coverage": "phpunit --coverage-html coverage",
+    "test": "pest",
+    "test:coverage": "pest --coverage --min=100",
+    "test:mutation": "pest --mutate --everything --covered-only --parallel",
     "phpstan": "phpstan analyse",
     "check-style": "php-cs-fixer fix --dry-run",
     "fix-style": "php-cs-fixer fix"
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   }
 }

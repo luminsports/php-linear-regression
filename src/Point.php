@@ -30,6 +30,7 @@ class Point
         return $this;
     }
 
+    /** @return array{x: float, y: float} */
     public function toArray(): array
     {
         return [

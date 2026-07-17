@@ -7,8 +7,10 @@ use Brick\Math\RoundingMode;
 
 class LeastSquares
 {
+    /** @var list<float|int> */
     protected array $xCoords = [];
 
+    /** @var list<float|int> */
     protected array $yCoords = [];
 
     protected float $xSum;
@@ -44,11 +46,17 @@ class LeastSquares
      */
     protected array $xy = [];
 
+    /**
+     * @param list<float|int> $xCoords
+     * @param list<float|int> $yCoords
+     * @param int<0, max>     $precision
+     */
     public function __construct(array $xCoords, array $yCoords, protected int $precision = 8)
     {
         $this->appendData($xCoords, $yCoords);
     }
 
+    /** @param int<0, max> $precision */
     public function setPrecision(int $precision): static
     {
         $this->precision = $precision;
@@ -166,7 +174,7 @@ class LeastSquares
      */
     public function getMeanY(): float|int
     {
-        if ($this->ySum === 0 || $this->coordinateCount === 0) {
+        if ($this->ySum === 0.0 || $this->coordinateCount === 0) {
             return 0;
         }
 
@@ -180,7 +188,7 @@ class LeastSquares
      */
     public function getRegressionLinePoints(): array
     {
-        if ($this->coordinateCount === 0) {
+        if ($this->coordinateCount === 0 || $this->xCoords === []) {
             return [];
         }
 
@@ -199,6 +207,10 @@ class LeastSquares
         return $this->xy;
     }
 
+    /**
+     * @param list<float|int> $xCoords
+     * @param list<float|int> $yCoords
+     */
     protected function appendData(array $xCoords, array $yCoords): void
     {
         $this->xCoords = array_merge($this->xCoords, $xCoords);
