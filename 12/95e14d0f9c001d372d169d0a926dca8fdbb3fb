@@ -1,0 +1,28 @@
+.gitignore
+  s_b8cf2404efef48::t_0abde74286a4a0 16-29
+  s_b39698aa5daa54::t_d424de9d69d36e 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1295e14d0f9c001d372d169d0a926dca8fdbb3fb",
+  "prompts": {},
+  "sessions": {
+    "s_b39698aa5daa54": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bfbff940-dee1-4374-add0-3f48263d4e55",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ryan Brereton <ryan@luminsports.com>"
+    },
+    "s_b8cf2404efef48": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fed85-3672-7e71-9c58-7c13b93d37ee",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Ryan Brereton <ryan@luminsports.com>"
+    }
+  }
+}
