@@ -4,10 +4,7 @@ build
 coverage
 .idea/
 .opencode/
-.sisyphus/
-.omo/
 .cass/
-.beads/
 .bv/
 .php_cs
 .php_cs.cache
@@ -16,3 +13,18 @@ coverage
 .phpunit.cache/
 .phpstan-cache/
 .DS_Store
+
+# Not officially Lumin-supported for team-wide distribution
+.amp
+.cursor
+.factory
+.grok
+.junie
+.kiro
+.pi
+.zed
+.beads
+.sisyphus
+.omo
+opencode.json
+.playwright-cli/
