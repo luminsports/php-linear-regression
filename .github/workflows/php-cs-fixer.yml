@@ -24,3 +24,5 @@ jobs:
 
       - name: Run PHP CS Fixer
         uses: luminsports/github-action-php-cs-fixer@main
+        with:
+          create-pull-request: ${{ github.ref_name == 'main' }}
