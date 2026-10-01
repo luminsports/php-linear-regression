@@ -1,0 +1,19 @@
+AGENTS.md
+  s_6e6d7bb87d1eb0::t_bdcc0a4b35aae6 37-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "51d3309136438d8dbb0a63f1af7269b3dba3adfa",
+  "prompts": {},
+  "sessions": {
+    "s_6e6d7bb87d1eb0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be1321c0-4bd9-44ce-a048-d9a0e933fac0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ryan Brereton <ryan@luminsports.com>"
+    }
+  }
+}
