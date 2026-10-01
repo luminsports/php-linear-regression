@@ -1,0 +1,19 @@
+.github/workflows/php-cs-fixer.yml
+  s_8865176623a1e1::t_52a71ffd07e451 9,15-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c915c68672b5fa70d158a1c85205ce1372c08dbf",
+  "prompts": {},
+  "sessions": {
+    "s_8865176623a1e1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0f5c6-1d59-7490-83d1-a05c539cc6f7",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ryan Brereton <ryan@luminsports.com>"
+    }
+  }
+}
