@@ -2,7 +2,9 @@ name: Run PHP CS Fixer
 
 on:
   push:
-    branches: [ 'main', 'develop', 'feature/**', 'release/**' ]
+    branches: [ 'main', 'develop' ]
+    paths: ['src/**.php']
+  pull_request:
     paths: ['src/**.php']
 
 permissions:
