@@ -1,0 +1,23 @@
+.github/workflows/php-cs-fixer.yml
+  s_a59f81c904aa23::t_8c2611b8130849 5-7
+.github/workflows/phpstan.yml
+  s_a59f81c904aa23::t_3acb0c9ff0aae3 5
+.github/workflows/tests.yml
+  s_a59f81c904aa23::t_a6df36d9e322a8 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fda757f9a73e6e57008bd622b76a431d8b58e0d7",
+  "prompts": {},
+  "sessions": {
+    "s_a59f81c904aa23": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13f33-977d-7b51-b276-476564a6f2a2",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ryan Brereton <ryan@luminsports.com>"
+    }
+  }
+}
