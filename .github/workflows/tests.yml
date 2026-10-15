@@ -2,10 +2,9 @@ name: Run Pest Tests
 
 on:
   push:
-    branches: [ 'main', 'develop', 'feature/**', 'release/**' ]
+    branches: [ 'main', 'develop' ]
     paths: [ 'src/**', 'tests/**', 'phpunit.xml', 'composer.json', 'composer.lock', '.github/workflows/tests.yml' ]
   pull_request:
-    branches: [ 'main', 'develop', 'feature/**', 'release/**' ]
     paths: [ 'src/**', 'tests/**', 'phpunit.xml', 'composer.json', 'composer.lock', '.github/workflows/tests.yml' ]
 
 permissions: {}

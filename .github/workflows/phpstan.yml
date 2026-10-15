@@ -2,10 +2,9 @@ name: Run PHPStan
 
 on:
   push:
-    branches: [main, develop, 'feature/**', 'release/**']
+    branches: [ 'main', 'develop' ]
     paths: ['src/**', 'phpstan*.neon*', 'composer.json', 'composer.lock', '.github/workflows/phpstan.yml']
   pull_request:
-    branches: [main, develop, 'feature/**', 'release/**']
     paths: ['src/**', 'phpstan*.neon*', 'composer.json', 'composer.lock', '.github/workflows/phpstan.yml']
 
 permissions: {}
